@@ -1,6 +1,8 @@
 import constants as CONSTANTS
 import tweepy
 import twitter
+import requests
+import json
 
 
 # Authitcating API
@@ -22,11 +24,15 @@ US_WOE_ID = 23424977
 world_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
 us_trends = twitter_api.trends.place(_id=US_WOE_ID)
 
-world_trends_set = set([trend['name'] for trend in world_trends[0]['trends']])
+def search_common_trends_in_the_world():
+    world_trends_set = set([trend['name'] for trend in world_trends[0]['trends']])
 
-us_trends_set = set([trend['name'] for trend in us_trends[0]['trends']])
+    us_trends_set = set([trend['name'] for trend in us_trends[0]['trends']])
 
-common_trends = world_trends_set.intersection(us_trends_set)
+    common_trends = world_trends_set.intersection(us_trends_set)
+    common_trends = [i.replace("#", "") for i in common_trends]
+
+    return common_trends
 
 def search_twitter_trends_by_place(trend_id):
     """
@@ -47,7 +53,6 @@ def search_twitter_trends_by_place(trend_id):
     return trends_list
 
 # print(search_twitter_trends_by_place(1))
-print(search_twitter_trends_by_place(23424977))
 
 def search_get_location_with_trending_topics(trend_id):
     "Method to get the location of the trends"
@@ -76,6 +81,31 @@ def search_for_user(user_id):
 
     return list_of_user_formatted_data
 
+post_data = search_twitter_trends_by_place(23424977)
 
-# print(search_for_user("New Cross"))
+def make_a_post_request(prepped_data):
 
+    prepped_data = json.dumps(prepped_data)
+    resp = requests.post(
+        "http://localhost:4200/",
+        data=json.dumps(prepped_data),
+        headers={'Content-Type':'application/json'})
+
+    # if resp.status_code != 201:
+    #     print(f"response successfully: {resp.status_code}")
+    # print('Created task. ID: {}'.format(resp.json()["id"]))
+
+    return resp
+
+# write to json file
+def write_to_json_file(json_to_be_converted, json_file_name):
+    with open(json_file_name, 'w') as json_file:
+        json.dump(json_to_be_converted, json_file)
+
+us_trends = search_twitter_trends_by_place(23424977)
+location_based_on_trends = search_get_location_with_trending_topics(23424977)
+user_info = search_for_user("Rob")
+
+
+write_to_json_file(us_trends, 'us-trends.json')
+write_to_json_file(user_info, 'user-ex.json')

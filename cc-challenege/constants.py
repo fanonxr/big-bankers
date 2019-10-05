@@ -1,9 +1,13 @@
+import os
 # Constants to request to the api
 
 CONSUMER_KEY = "1DoG8m37zYEkfeRcXFosEKiTe"
 CONSUMER_SECRET = "nbnt0QT6kWNGJvNDHvo8zvI8yX9PIW9grxkdgbvq35nKyn0oqC"
 ACCESS_KEY = "1008178143528718336-jv7RtsQhUx4z1rNK3fZgjSijsKjYhQ"
 ACCESS_SECRET = "LGr9Znc3nwf0cyuy01YbAvC0m6oCI7Lk1sIT0WoUfi440"
+
+py_dir = os.getcwd()
+base_dir = os.path.normpath(os.getcwd() + os.sep + os.pardir)
 
 urlObpAPI = "https://citizensbank.openbankproject.com/obp/v4.0.0/banks/citizens.0201.us-b.cb/accounts/03392032-7904-45d0-8609-5302a47b5d75/owner/transactions"
 
